@@ -124,10 +124,12 @@ void binary_search::search_the_element(int value)
 	while (abs(a-b)>0)
 	{
 		int mid = (a + b) / 2;
-		int tmp = *(*arr + mid);
+		int r = mid / N_cols;
+		int c = mid % N_cols;
+		int tmp = *(*(arr + r) + c);
 		if (value == tmp)
 		{
-			cout << " Number " << value << " is located at intersection of row = " <<  mid / N_cols << " and column =  " << mid % N_cols << std::endl;
+			cout << " Number " << value << " is located at intersection of row = " <<  r << " and column =  " << c << std::endl;
 			break;
 		}
 		else if (value > tmp)
