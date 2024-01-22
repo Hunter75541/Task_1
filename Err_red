@@ -1,0 +1,155 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+using std::cout;
+
+
+//////////////////////////////////////
+
+class DATA
+{
+	protected:
+		int **arr;
+		int M_rows, N_cols;
+	public:
+		DATA();
+		DATA(const int M_rows, const int N_cols);
+		~DATA();
+		void show ();
+		virtual void setter(std::string obj) = 0;
+};
+
+
+class File : public DATA
+{
+	public:
+		virtual void setter(std::string obj) override;
+		File(int M, int N, std::string obj);
+};
+
+class Search : public File
+{
+	public:
+		virtual void search_the_element(int value) = 0 ;
+		Search(int M, int N, std::string obj);
+};
+
+class binary_search : public Search
+{
+	public:
+		void search_the_element(int value) override;
+		binary_search(int M, int N, int value, std::string obj);
+};
+
+//////////////////////////////////////
+
+DATA::DATA()
+{
+	M_rows = 1;
+	N_cols = 1;
+	arr = new int *[M_rows];
+	arr[0] = new int[N_cols];
+	arr[0][0] = 0;
+}
+
+DATA::DATA(const int M_rows, const int N_cols)
+{
+	this -> M_rows = M_rows;
+	this -> N_cols = N_cols;
+	arr = new int *[M_rows];
+	for(int i=0; i < M_rows; ++i)
+	{
+		arr[i] = new int[N_cols];
+	}
+	if(!arr)
+		cout << "Exeption!";
+}
+DATA::~DATA()
+{
+	for(int i=0; i < N_cols ; ++i) 
+	{
+		delete [] arr[i];
+	}
+	delete [] arr;
+}
+
+void DATA::show()
+{
+	for(int i = 0; i < M_rows; ++i )
+		{
+			for(int j = 0; j < N_cols; ++j)
+				{
+					cout << arr[i][j] ;
+				}
+		}
+}
+
+void File::setter(std::string obj)
+{
+		for (int i = 0; i < M_rows; ++i)
+		{
+			for(int j = 0; j < N_cols; ++j)
+			{
+					std::cin >> arr[i][j];
+			}
+		}
+        std::cout << "readed" << std::endl;
+        for (int i = 0; i < M_rows; ++i)
+		{
+			for(int j = 0; j < N_cols; ++j)
+			{
+					std::cout << arr[i][j] << " ";
+			}
+            std::cout << std::endl;
+		}
+        std::cout << std::endl;
+}
+
+File::File(int M, int N, std::string obj):DATA(M,N)
+{
+	setter(obj);
+}
+
+Search::Search(int M, int N, std::string obj) : File(M, N, obj) {};
+
+void binary_search::search_the_element(int value)
+{
+    std::cout << "search..." << std::endl;
+	int a = 0;
+	int b = M_rows*N_cols;
+	while (abs(a-b)>0)
+	{
+		int mid = (a + b) / 2;
+		int r = mid / N_cols;
+		int c = mid % N_cols;
+		int tmp = *(*(arr + r) + c);
+		if (value == tmp)
+		{
+			cout << " Number " << value << " is located at intersection of row = " <<  r << " and column =  " << c << std::endl;
+			break;
+		}
+		else if (value > tmp)
+		{
+			a = mid ;
+		}
+		else 
+		{
+			b = mid;
+		}
+	}
+    std::cout << "break from loop" << std::endl;
+}
+
+binary_search::binary_search(int M, int N, int value, std::string obj):Search(M, N, obj)
+{
+	search_the_element(value);
+}
+
+//////////////////////////////////////
+
+int main(int argc, char *argv[])
+{
+    std::cout << "start" << std::endl;
+	binary_search a3(3,4,33,"test.txt");
+    std::cout << "finish" << std::endl;
+}
